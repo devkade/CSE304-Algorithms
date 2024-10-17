@@ -3,7 +3,7 @@ class Node:
         self.key = key
         self.left = None
         self.right = None
-    
+
     def preorder(self, path):
         path.append(self.key)
         if self.left != None:
@@ -17,13 +17,18 @@ class Node:
         path.append(self.key)
         if self.right != None:
             self.right.inorder(path)
-                
+
+
 def minimum(i, j, A, p):
     minvalue, mink = INF, 0
     for k in range(i, j + 1):
         # Complete the code here
-    
+        if minvalue > A[i][k - 1] + A[k + 1][j] + sum(p[i : j + 1]):
+            minvalue = A[i][k - 1] + A[k + 1][j] + sum(p[i : j + 1])
+            mink = k
+
     return minvalue, mink
+
 
 def optsearchtree(n, p):
     A = [[INF] * (n + 1) for _ in range(n + 2)]
@@ -36,8 +41,13 @@ def optsearchtree(n, p):
     for diagonal in range(1, n):
         # Complete the code here
         # Tip. Implement minimum() and use it
+        for i in range(1, n - diagonal + 1):
+            j = i + diagonal
+            A[i][j], k = minimum(i, j, A, p)
+            R[i][j] = k
 
     return A[1][n], A, R
+
 
 def tree(i, j, K, R):
     k = R[i][j]
@@ -45,7 +55,11 @@ def tree(i, j, K, R):
         return None
     else:
         # Complete the code here
+        p = Node(K[k])
+        p.left = tree(i, k - 1, K, R)
+        p.right = tree(k + 1, j, K, R)
         return p
+
 
 INF = float("inf")
 
@@ -57,14 +71,14 @@ p = [0, 3, 3, 1, 1]
 minavg, A, R = optsearchtree(n, p)
 print("A = ")
 for i in range(1, n + 2):
-    print(A[i][i-1:])
+    print(A[i][i - 1 :])
 print("R = ")
 for i in range(1, n + 2):
-    print(R[i][i-1:])
+    print(R[i][i - 1 :])
 print("minavg = ", minavg)
 
 root = tree(1, n, K, R)
-path = [] 
+path = []
 root.preorder(path)
 print("preorder=", path)
 path = []
@@ -73,25 +87,26 @@ print("inorder=", path)
 
 
 # # Example 2 - Your Custom Case
-# print("######Example 2 #######") 
+print("######Example 2 #######")
 # # Insert your example here
-# n = 
-# K = 
-# p = 
-raise NotImplementedError("Complete your example.")
+n = 5
+K = [0, 1, 2, 3, 4, 5]
+p = [0, 3, 2, 1, 1, 1]
+# raise NotImplementedError("Complete your example.")
 minavg, A, R = optsearchtree(n, p)
 print("A = ")
 for i in range(1, n + 2):
-    print(A[i][i-1:])
+    print(A[i][i - 1 :])
 print("R = ")
 for i in range(1, n + 2):
-    print(R[i][i-1:])
+    print(R[i][i - 1 :])
 print("minavg = ", minavg)
 
 root = tree(1, n, K, R)
-path = [] 
+path = []
 root.preorder(path)
 print("preorder=", path)
 path = []
 root.inorder(path)
 print("inorder=", path)
+
